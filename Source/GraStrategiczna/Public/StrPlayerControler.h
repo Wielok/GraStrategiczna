@@ -16,5 +16,7 @@ class GRASTRATEGICZNA_API AStrPlayerControler : public APlayerController
 
 public:
 	AStrPlayerControler();
+
+	
 	
 };

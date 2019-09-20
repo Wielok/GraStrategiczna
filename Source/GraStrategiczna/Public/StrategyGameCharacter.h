@@ -45,6 +45,9 @@ protected:
 
 	void ChangeDistance(float Rate);
 
+	void onClick();
+
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
