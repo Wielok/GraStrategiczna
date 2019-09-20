@@ -17,8 +17,10 @@ AStrategyGameCharacter::AStrategyGameCharacter()
 
 
 	// set our turn rates for input
-	BaseTurnRate = 45.f;
-	BaseLookUpRate = 45.f;
+	BaseTurnRate = 90.f;
+	BaseLookUpRate = 90.f;
+	BaseDistanceChangeRate = 45.f;
+
 
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
 	SpringArmComp->bUsePawnControlRotation = true;
@@ -59,8 +61,12 @@ void AStrategyGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	PlayerInputComponent->BindAxis("TurnRate", this, &AStrategyGameCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AStrategyGameCharacter::LookUpAtRate);
 
+	PlayerInputComponent->BindAxis("ArmLength", this, &AStrategyGameCharacter::ChangeDistance);
+
+
 	PlayerInputComponent->BindAction("MoveCamera",IE_Pressed,this, &AStrategyGameCharacter::MoveCamera);
 	PlayerInputComponent->BindAction("MoveCamera", IE_Released, this, &AStrategyGameCharacter::StopMoveCamera);
+
 
 }
 
@@ -109,6 +115,14 @@ void AStrategyGameCharacter::TurnAtRate(float Rate)
 void AStrategyGameCharacter::MoveCamera() {
 	bMove = true;
 }
+
 void AStrategyGameCharacter::StopMoveCamera() {
 	bMove = false;
+}
+
+void AStrategyGameCharacter::ChangeDistance(float Rate) {
+
+	if((SpringArmComp->TargetArmLength + (Rate * BaseDistanceChangeRate))>2.0 && (SpringArmComp->TargetArmLength + (Rate * BaseDistanceChangeRate))<1000.0f)
+	SpringArmComp->TargetArmLength += (Rate* BaseDistanceChangeRate);
+
 }
