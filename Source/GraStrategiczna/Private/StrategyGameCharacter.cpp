@@ -7,6 +7,7 @@
 #include "GameFramework/InputSettings.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "..\Public\StrategyGameCharacter.h"
+#include "TestowyActor.h"
 
 // Sets default values
 AStrategyGameCharacter::AStrategyGameCharacter()
@@ -14,6 +15,14 @@ AStrategyGameCharacter::AStrategyGameCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	/*
+	static ConstructorHelpers::FObjectFinder<TSubclassOf<ATestowyActor>>Box(TEXT("Class'/Script/GraStrategiczna.TestowyActor'"));
+
+	if (Box.Succeeded())
+	{
+		ProjectileClass2=Box.Object;
+		
+	}*/
 
 
 
@@ -137,11 +146,11 @@ void AStrategyGameCharacter::onClick()
 	{
 		FVector mouseLocation, mouseDirection;
 
-		//PlayerController->GetHitResultUnderCursor(ECollisionChannel::ECC_WorldDynamic, false, TraceResult);
+		
 		PlayerController->DeprojectMousePositionToWorld(mouseLocation, mouseDirection);
 
 
-		FVector TraceEnd = (mouseLocation + (mouseDirection * 1000));
+		FVector TraceEnd = (mouseLocation + (mouseDirection * 100000));
 
 		FCollisionQueryParams QueryParmas;
 		QueryParmas.AddIgnoredActor(this);
@@ -152,15 +161,28 @@ void AStrategyGameCharacter::onClick()
 		GetWorld()->LineTraceSingleByChannel(Interaction, mouseLocation, TraceEnd, ECC_GameTraceChannel1, QueryParmas);
 
 		//Interaction->Location;
-
+		
 		FString TraceString;
 		if (Interaction.GetActor() != nullptr)
 		{
-			TraceString += FString::Printf(TEXT("Trace Actor %s."), *Interaction.Location.ToString());
+			TraceString += FString::Printf(TEXT("%s."), *Interaction.Location.ToString());
+
+
+			FActorSpawnParameters ActorSpawnParams;
+			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+			GetWorld()->SpawnActor<ATestowyActor>(ProjectileClass, Interaction.Location,FRotator(0.0f,0.0f,0.0f), ActorSpawnParams);
+
 		}
 		if (Interaction.GetComponent() != nullptr)
 		{
-			TraceString += FString::Printf(TEXT("Trace Comp %s."), *Interaction.Location.ToString());
+			TraceString += FString::Printf(TEXT("%s."), *Interaction.Location.ToString());
+
+			FActorSpawnParameters ActorSpawnParams;
+			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+			// spawn the projectile at the muzzle
+			GetWorld()->SpawnActor<ATestowyActor>(ProjectileClass, Interaction.Location, FRotator(0.0f, 0.0f, 0.0f), ActorSpawnParams);
+
 		}
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TraceString);
 	}

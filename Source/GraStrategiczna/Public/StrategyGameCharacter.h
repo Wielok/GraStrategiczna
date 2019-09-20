@@ -7,7 +7,7 @@
 #include "StrategyGameCharacter.generated.h"
 
 
-
+class ATestowyActor;
 class UCameraComponent;
 class USpringArmComponent;
 
@@ -52,6 +52,11 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+	
+	//ATestowyActor*  ProjectileClass2;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
+	TSubclassOf<ATestowyActor> ProjectileClass;
 
 	float BaseDistanceChangeRate;
 
