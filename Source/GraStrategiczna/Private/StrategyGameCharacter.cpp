@@ -165,12 +165,15 @@ void AStrategyGameCharacter::onClick()
 		FString TraceString;
 		if (Interaction.GetActor() != nullptr)
 		{
+			
+			
+			
 			TraceString += FString::Printf(TEXT("%s."), *Interaction.Location.ToString());
-
-
 			FActorSpawnParameters ActorSpawnParams;
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 			GetWorld()->SpawnActor<ATestowyActor>(ProjectileClass, Interaction.Location,FRotator(0.0f,0.0f,0.0f), ActorSpawnParams);
+
+
 
 		}
 		if (Interaction.GetComponent() != nullptr)

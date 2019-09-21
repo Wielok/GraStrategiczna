@@ -11,7 +11,7 @@ ATestowyActor::ATestowyActor()
 
 
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualRepresentation"));
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> BoxVisualAsset(TEXT("StaticMesh'/Engine/EngineMeshes/Cube.Cube'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> BoxVisualAsset(TEXT("StaticMesh'/Engine/VREditor/TransformGizmo/StartRotationHandleIndicator.StartRotationHandleIndicator'"));
 
 	if (BoxVisualAsset.Succeeded())
 	{
@@ -23,6 +23,7 @@ ATestowyActor::ATestowyActor()
 	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	RootComponent = MeshComp;
 
+	InitialLifeSpan = 1.0f;
 
 }
 
