@@ -15,10 +15,13 @@ public:
 	// Sets default values for this character's properties
 	ABasicUnit();
 
+	void MoveToPoint(FVector Location);
+
 protected:
 
-	FVector CurrentMoveLocation();
+	void CurrentMoveLocation();
 
+	FVector pkt;
 
 
 	// Called when the game starts or when spawned
@@ -26,7 +29,7 @@ protected:
 
 
 
-	void MoveToPoint(FVector Location);
+	
 public:	
 
 

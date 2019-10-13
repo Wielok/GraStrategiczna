@@ -8,6 +8,8 @@
 #include "GameFramework/PawnMovementComponent.h"
 #include "..\Public\StrategyGameCharacter.h"
 #include "TestowyActor.h"
+#include "Kismet/GameplayStatics.h"
+#include "BasicUnit.h"
 
 // Sets default values
 AStrategyGameCharacter::AStrategyGameCharacter()
@@ -49,6 +51,8 @@ AStrategyGameCharacter::AStrategyGameCharacter()
 void AStrategyGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABasicUnit::StaticClass(), Units);
 	
 }
 
@@ -75,6 +79,7 @@ void AStrategyGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 
 	PlayerInputComponent->BindAction("onClick", IE_Pressed, this, &AStrategyGameCharacter::onClick);
+	PlayerInputComponent->BindAction("onClickRight", IE_Pressed, this, &AStrategyGameCharacter::onClickRight);
 
 	PlayerInputComponent->BindAction("MoveCamera",IE_Pressed,this, &AStrategyGameCharacter::MoveCamera);
 	PlayerInputComponent->BindAction("MoveCamera", IE_Released, this, &AStrategyGameCharacter::StopMoveCamera);
@@ -167,15 +172,24 @@ void AStrategyGameCharacter::onClick()
 		{
 			
 			
-			
+			CurrentUnit = nullptr;
 			TraceString += FString::Printf(TEXT("%s."), *Interaction.Location.ToString());
 			FActorSpawnParameters ActorSpawnParams;
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 			GetWorld()->SpawnActor<ATestowyActor>(ProjectileClass, Interaction.Location,FRotator(0.0f,0.0f,0.0f), ActorSpawnParams);
+			for (int i = 0; i < Units.Num(); i++) {
+				if (Units[i] == Interaction.GetActor()) {
+					CurrentUnit = Cast<ABasicUnit>(Interaction.GetActor());
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,"jednostka");
+				
+				}
+				
+			}
 
 
 
 		}
+		/*
 		if (Interaction.GetComponent() != nullptr)
 		{
 			TraceString += FString::Printf(TEXT("%s."), *Interaction.Location.ToString());
@@ -186,9 +200,54 @@ void AStrategyGameCharacter::onClick()
 			// spawn the projectile at the muzzle
 			GetWorld()->SpawnActor<ATestowyActor>(ProjectileClass, Interaction.Location, FRotator(0.0f, 0.0f, 0.0f), ActorSpawnParams);
 
-		}
+		}*/
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TraceString);
 	}
 	
 	
+}
+
+void AStrategyGameCharacter::onClickRight()
+{
+	if (CurrentUnit != nullptr) {
+
+		APlayerController* PlayerController = Cast<APlayerController>(GetController());
+		if (PlayerController != nullptr)
+		{
+			FVector mouseLocation, mouseDirection;
+
+
+			PlayerController->DeprojectMousePositionToWorld(mouseLocation, mouseDirection);
+
+
+			FVector TraceEnd = (mouseLocation + (mouseDirection * 100000));
+
+			FCollisionQueryParams QueryParmas;
+			QueryParmas.AddIgnoredActor(this);
+			QueryParmas.bTraceComplex = true;
+
+			FHitResult Interaction;
+
+			GetWorld()->LineTraceSingleByChannel(Interaction, mouseLocation, TraceEnd, ECC_GameTraceChannel1, QueryParmas);
+
+			//Interaction->Location;
+
+			FString TraceString;
+			if (Interaction.GetActor() != nullptr)
+			{
+				FActorSpawnParameters ActorSpawnParams;
+				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+				GetWorld()->SpawnActor<ATestowyActor>(ProjectileClass, Interaction.Location, FRotator(0.0f, 0.0f, 0.0f), ActorSpawnParams);
+				CurrentUnit->MoveToPoint(Interaction.Location);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Kurczak");
+
+
+
+
+			}
+
+		}
+	}
+	
+
 }

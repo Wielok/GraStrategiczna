@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "StrategyGameCharacter.generated.h"
 
-
+class ABasicUnit;
 class ATestowyActor;
 class UCameraComponent;
 class USpringArmComponent;
@@ -47,9 +47,15 @@ protected:
 
 	void onClick();
 
+	void onClickRight();
+
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	TArray<AActor*> Units;
+
+	ABasicUnit* CurrentUnit;
 
 public:	
 	

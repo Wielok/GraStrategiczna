@@ -4,6 +4,7 @@
 #include "BasicUnit.h"
 #include "AI/NavigationSystemBase.h"
 #include "..\Public\BasicUnit.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 
 // Sets default values
 ABasicUnit::ABasicUnit()
@@ -17,12 +18,14 @@ ABasicUnit::ABasicUnit()
 void ABasicUnit::BeginPlay()
 {
 	Super::BeginPlay();
+	// spawns default controller (if not, there is no controller for NPC to control)
 	
 }
 
 void ABasicUnit::MoveToPoint(FVector Location)
 {
-	UNavigationSystem::SimpleMoveToLocation(GetController(), Location);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "odpowiada");
+	UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), Location);
 }
 
 
