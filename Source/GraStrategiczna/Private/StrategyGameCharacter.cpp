@@ -43,6 +43,7 @@ AStrategyGameCharacter::AStrategyGameCharacter()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	CameraComp->SetupAttachment(SpringArmComp);
 
+	
 
 
 }
@@ -139,7 +140,7 @@ void AStrategyGameCharacter::StopMoveCamera() {
 
 void AStrategyGameCharacter::ChangeDistance(float Rate) {
 
-	if((SpringArmComp->TargetArmLength + (Rate * BaseDistanceChangeRate))>2.0 && (SpringArmComp->TargetArmLength + (Rate * BaseDistanceChangeRate))<1000.0f)
+	if((SpringArmComp->TargetArmLength + (Rate * BaseDistanceChangeRate))>2.0 && (SpringArmComp->TargetArmLength + (Rate * BaseDistanceChangeRate))<10000.0f)
 	SpringArmComp->TargetArmLength += (Rate* BaseDistanceChangeRate);
 
 }

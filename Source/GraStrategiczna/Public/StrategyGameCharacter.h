@@ -12,6 +12,7 @@ class UCameraComponent;
 class USpringArmComponent;
 
 
+
 UCLASS()
 class GRASTRATEGICZNA_API AStrategyGameCharacter : public ACharacter
 {

@@ -6,8 +6,12 @@
 #include "GameFramework/Character.h"
 #include "BasicUnit.generated.h"
 
+class UBoxComponent;
+class USkeletalMeshComponent;
+class UMoveCompBasic;
+
 UCLASS()
-class GRASTRATEGICZNA_API ABasicUnit : public ACharacter
+class GRASTRATEGICZNA_API ABasicUnit : public APawn
 {
 	GENERATED_BODY()
 
@@ -19,16 +23,23 @@ public:
 
 protected:
 
-	void CurrentMoveLocation();
+	FVector NextPathPoint(FVector Location);
 
-	FVector pkt;
+	//void CurrentMoveLocation();
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+		UMoveCompBasic* MoveComp;
 
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	//UBoxComponent* BoxComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USkeletalMeshComponent* MeshComp;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
 
-
-
+	virtual UPawnMovementComponent* GetMovementComponent() const override;
 	
 public:	
 
