@@ -23,7 +23,9 @@ public:
 
 protected:
 
-	FVector NextPathPoint(FVector Location);
+	FVector NextPathPoint();
+
+	FVector NextPoint;
 
 	//void CurrentMoveLocation();
 
@@ -40,6 +42,15 @@ protected:
 	
 
 	virtual UPawnMovementComponent* GetMovementComponent() const override;
+
+	float MovementForce;
+
+	float RequiredDistanceToTarget;
+
+	FVector EndPoint;
+
+	bool bUseVelocityChange;
+	bool bEnd;
 	
 public:	
 

@@ -23,13 +23,19 @@ ABasicUnit::ABasicUnit()
 	//RootComponent = BoxComp;
 
 	MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshComp"));
-	RootComponent = MeshComp;
 	MeshComp->SetCanEverAffectNavigation(false);
+	MeshComp->SetSimulatePhysics(true);
+	RootComponent = MeshComp;
+	
 
-	MoveComp = CreateDefaultSubobject<UMoveCompBasic>(TEXT("MoveComp"));
-	MoveComp->UpdatedComponent = RootComponent;
+
+	//MoveComp = CreateDefaultSubobject<UMoveCompBasic>(TEXT("MoveComp"));
+	//MoveComp->UpdatedComponent = RootComponent;
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	RequiredDistanceToTarget = 100.0f;
+	bEnd = true;
 
 }
 
@@ -44,16 +50,21 @@ void ABasicUnit::BeginPlay()
 void ABasicUnit::MoveToPoint(FVector Location)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "odpowiada");
-	UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), Location);
+	EndPoint = Location;
+	NextPoint = NextPathPoint();
+	bEnd = false;
 }
 
-FVector ABasicUnit::NextPathPoint(FVector Location)
+FVector ABasicUnit::NextPathPoint()
 {
 
-	UNavigationPath* NavPath =UNavigationSystemV1::FindPathToLocationSynchronously(this, GetActorLocation(), Location);
+	UNavigationPath* NavPath =UNavigationSystemV1::FindPathToLocationSynchronously(this, GetActorLocation(), EndPoint);
 
 	if (NavPath->PathPoints.Num() > 1) {
 		return NavPath->PathPoints[1];
+	}
+	else {
+		bEnd = true;
 	}
 	return GetActorLocation();
 }
@@ -64,7 +75,23 @@ FVector ABasicUnit::NextPathPoint(FVector Location)
 void ABasicUnit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (bEnd == false) {
+		float DistanceToTarget = (GetActorLocation() - NextPoint).Size();
 
+		if (DistanceToTarget <= RequiredDistanceToTarget) {
+			NextPoint = NextPathPoint();
+
+
+		}
+		else {
+			FVector ForceDirection = NextPoint - GetActorLocation();
+
+			ForceDirection.Normalize();
+
+			ForceDirection *= (-0.2);
+			MeshComp->AddForce(ForceDirection,NAME_None,bUseVelocityChange);
+		}
+	}
 }
 
 UPawnMovementComponent* ABasicUnit::GetMovementComponent() const
