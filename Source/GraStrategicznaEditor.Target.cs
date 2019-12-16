@@ -10,5 +10,7 @@ public class GraStrategicznaEditorTarget : TargetRules
 		Type = TargetType.Editor;
 
 		ExtraModuleNames.AddRange( new string[] { "GraStrategiczna" } );
+
+		DefaultBuildSettings = BuildSettingsVersion.V2;
 	}
 }

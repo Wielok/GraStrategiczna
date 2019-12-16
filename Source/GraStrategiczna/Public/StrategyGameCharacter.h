@@ -29,8 +29,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		UCameraComponent* CameraComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-		USpringArmComponent* SpringArmComp;
 
 	void MoveForward(float Value);
 
@@ -58,8 +56,11 @@ protected:
 
 	ABasicUnit* CurrentUnit;
 
+	
 public:	
 	
+	UCharacterMovementComponent* MoveComp;
+
 	//ATestowyActor*  ProjectileClass2;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile")

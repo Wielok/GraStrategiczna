@@ -6,9 +6,11 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/InputSettings.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "..\Public\StrategyGameCharacter.h"
 #include "TestowyActor.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "BasicUnit.h"
 
 // Sets default values
@@ -34,14 +36,17 @@ AStrategyGameCharacter::AStrategyGameCharacter()
 	BaseDistanceChangeRate = 45.f;
 
 
-	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
-	SpringArmComp->bUsePawnControlRotation = true;
-	SpringArmComp->SetupAttachment(RootComponent);
+
 	//GetMesh()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
 	//GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
-	CameraComp->SetupAttachment(SpringArmComp);
+	CameraComp->bUsePawnControlRotation = true;
+	CameraComp->SetupAttachment(RootComponent);
+
+
+
+
 
 	
 
@@ -54,6 +59,14 @@ void AStrategyGameCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABasicUnit::StaticClass(), Units);
+
+	MoveComp = GetCharacterMovement();
+	MoveComp->SetMovementMode(MOVE_Flying);
+	MoveComp->bCheatFlying = true;
+	MoveComp->MaxAcceleration = 100000.0f;
+	MoveComp->BrakingDecelerationFlying = 100000.0f;
+
+
 	
 }
 
@@ -139,9 +152,23 @@ void AStrategyGameCharacter::StopMoveCamera() {
 }
 
 void AStrategyGameCharacter::ChangeDistance(float Rate) {
-
+	/*
 	if((SpringArmComp->TargetArmLength + (Rate * BaseDistanceChangeRate))>2.0 && (SpringArmComp->TargetArmLength + (Rate * BaseDistanceChangeRate))<10000.0f)
-	SpringArmComp->TargetArmLength += (Rate* BaseDistanceChangeRate);
+	SpringArmComp->TargetArmLength += (Rate* BaseDistanceChangeRate);*/
+	
+		FQuat Rotation = CameraComp->GetComponentTransform().GetRotation();
+		//FRotator Rotation = CameraComp->GetWorldRotation();
+		FVector vForward = Rotation.RotateVector(FVector(100000.0f,0.0f,0.0f));
+
+		//FString TraceString;
+
+		//TraceString += FString::Printf(TEXT("%s."), *CameraComp->GetComponentRotation().ToString);
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TraceString);
+
+
+		AddMovementInput(vForward, Rate*1000000000.0f);
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "%s",*vForward.ToString());
+	
 
 }
 
