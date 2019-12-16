@@ -24,6 +24,8 @@ public:
 
 protected:
 
+	
+
 	bool bMove=false;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

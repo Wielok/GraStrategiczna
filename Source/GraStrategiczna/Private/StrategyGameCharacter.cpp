@@ -122,7 +122,16 @@ void AStrategyGameCharacter::MoveForward(float Value)
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("This is an on screen message!"));
 
 		// add movement in that direction
-		AddMovementInput(GetActorForwardVector(), Value);
+		
+		if (bMove == true) {
+			FQuat Rotation = CameraComp->GetComponentTransform().GetRotation();
+			FVector vForward = Rotation.RotateVector(FVector(1.0f, 0.0f, 0.0f));
+			AddMovementInput(vForward, Value * 1.0f);
+		}
+		else {
+			AddMovementInput(GetActorForwardVector(), Value);
+			
+		}
 	}
 }
 
@@ -152,24 +161,11 @@ void AStrategyGameCharacter::StopMoveCamera() {
 }
 
 void AStrategyGameCharacter::ChangeDistance(float Rate) {
-	/*
-	if((SpringArmComp->TargetArmLength + (Rate * BaseDistanceChangeRate))>2.0 && (SpringArmComp->TargetArmLength + (Rate * BaseDistanceChangeRate))<10000.0f)
-	SpringArmComp->TargetArmLength += (Rate* BaseDistanceChangeRate);*/
 	
-		FQuat Rotation = CameraComp->GetComponentTransform().GetRotation();
-		//FRotator Rotation = CameraComp->GetWorldRotation();
-		FVector vForward = Rotation.RotateVector(FVector(100000.0f,0.0f,0.0f));
-
-		//FString TraceString;
-
-		//TraceString += FString::Printf(TEXT("%s."), *CameraComp->GetComponentRotation().ToString);
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TraceString);
-
-
-		AddMovementInput(vForward, Rate*1000000000.0f);
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "%s",*vForward.ToString());
 	
-
+	FVector vForward = FVector(0.0f,0.0f,1.0f);
+	AddMovementInput(vForward, Rate);
+	
 }
 
 void AStrategyGameCharacter::onClick()
