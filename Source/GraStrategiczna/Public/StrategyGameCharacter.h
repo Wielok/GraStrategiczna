@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "StrategyGameCharacter.generated.h"
 
-class ABasicUnit;
+class ABasicUnitV2;
 class ATestowyActor;
 class UCameraComponent;
 class USpringArmComponent;
@@ -56,7 +56,7 @@ protected:
 
 	TArray<AActor*> Units;
 
-	ABasicUnit* CurrentUnit;
+	ABasicUnitV2* CurrentUnit;
 
 	
 public:	

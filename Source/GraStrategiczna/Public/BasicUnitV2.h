@@ -4,20 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "BasicUnit.generated.h"
-
-class UBoxComponent;
-class USkeletalMeshComponent;
-class UMoveCompBasic;
+#include "BasicUnitV2.generated.h"
 
 UCLASS()
-class GRASTRATEGICZNA_API ABasicUnit : public APawn
+class GRASTRATEGICZNA_API ABasicUnitV2 : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	ABasicUnit();
+	ABasicUnitV2();
 
 	void MoveToPoint(FVector Location);
 
@@ -27,21 +23,13 @@ protected:
 
 	FVector NextPoint;
 
-	//void CurrentMoveLocation();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-		UMoveCompBasic* MoveComp;
 
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	//UBoxComponent* BoxComp;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USkeletalMeshComponent* MeshComp;
+		//USkeletalMeshComponent* MeshComp;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
 
-	virtual UPawnMovementComponent* GetMovementComponent() const override;
 
 	float MovementForce;
 
@@ -51,12 +39,14 @@ protected:
 
 	bool bUseVelocityChange;
 	bool bEnd;
-	
-public:	
+
+public:
 
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 };

@@ -11,7 +11,7 @@
 #include "TestowyActor.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "BasicUnit.h"
+#include "BasicUnitV2.h"
 
 // Sets default values
 AStrategyGameCharacter::AStrategyGameCharacter()
@@ -58,7 +58,7 @@ void AStrategyGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABasicUnit::StaticClass(), Units);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABasicUnitV2::StaticClass(), Units);
 
 	MoveComp = GetCharacterMovement();
 	MoveComp->SetMovementMode(MOVE_Flying);
@@ -203,7 +203,7 @@ void AStrategyGameCharacter::onClick()
 			GetWorld()->SpawnActor<ATestowyActor>(ProjectileClass, Interaction.Location,FRotator(0.0f,0.0f,0.0f), ActorSpawnParams);
 			for (int i = 0; i < Units.Num(); i++) {
 				if (Units[i] == Interaction.GetActor()) {
-					CurrentUnit = Cast<ABasicUnit>(Interaction.GetActor());
+					CurrentUnit = Cast<ABasicUnitV2>(Interaction.GetActor());
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,"jednostka");
 				
 				}
