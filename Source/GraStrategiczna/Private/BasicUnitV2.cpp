@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "BasicUnitV2.h"
 #include "Components/BoxComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -9,101 +6,68 @@
 #include "NavigationSystem.h"
 #include "MoveCompBasic.h"
 #include "NavigationPath.h"
-// Sets default values
+#include "Kismet/KismetMathLibrary.h"
+
 ABasicUnitV2::ABasicUnitV2()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-
-	/*
-	MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshComp"));
-	MeshComp->SetCanEverAffectNavigation(false);
-	MeshComp->SetSimulatePhysics(true);
-	MeshComp->SetupAttachment(RootComponent);
-	*/
-
-
-
-	//MoveComp = CreateDefaultSubobject<UMoveCompBasic>(TEXT("MoveComp"));
-	//MoveComp->UpdatedComponent = RootComponent;
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	RequiredDistanceToTarget = 1.0f;
 	bEnd = true;
-
-
 }
 
-// Called when the game starts or when spawned
 void ABasicUnitV2::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
-// Called every frame
-
-// Called to bind functionality to input
 void ABasicUnitV2::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 void ABasicUnitV2::MoveToPoint(FVector Location)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "odpowiada");
-	EndPoint = Location;
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::SanitizeFloat(Location));
-
+	enumeration = 0;
+	NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, GetActorLocation(), Location);
 	NextPoint = NextPathPoint();
 	bEnd = false;
 }
 
 FVector ABasicUnitV2::NextPathPoint()
 {
-	UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, GetActorLocation(), EndPoint);
-
-
-
-	if (NavPath && NavPath->PathPoints.Num() > 1)
+	if (NavPath && enumeration < NavPath->PathPoints.Num())
 	{
-		// Return next point in the path
-
-		return NavPath->PathPoints[1];
+		enumeration++;
+		return NavPath->PathPoints[enumeration-1];
 	}
-	else {
+	else 
+	{
 		bEnd = true;
 	}
 	return GetActorLocation();
 }
 
-
-
-// Called every frame
 void ABasicUnitV2::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-
-	if (bEnd == false) {
+	if (bEnd == false) 
+	{
 		float DistanceToTarget = FVector::Dist(GetActorLocation(), NextPoint);
 
-		if (DistanceToTarget <= 10.0f) {
+		if (DistanceToTarget <= 100.0f) {
 			NextPoint = NextPathPoint();
-
 		}
-		else {
-			FVector ForceDirection = NextPoint - GetActorLocation();
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, "rusza sie");
-			ForceDirection.Normalize();
-
-			ForceDirection *= 1000;
-			//MeshComp->AddForce(ForceDirection,NAME_None,bUseVelocityChange);
-			//UNavigationSystemV1::SimpleMoveToLocation(GetController(),NextPoint);
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), NextPoint);
+		else
+		{
+			FVector moveVector = (NextPoint - GetActorLocation());
+			FRotator currentRotation = GetActorRotation();
+			FRotator findLookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), NextPoint);
+			FRotator NewRot = FMath::RInterpTo(GetActorRotation(), findLookAtRotation, DeltaTime, 2);
+			AddActorWorldTransform(FTransform(NewRot,moveVector.GetClampedToMaxSize(3),FVector::OneVector));
+			SetActorLocation(GetActorLocation() + moveVector.GetClampedToMaxSize(3));
+			SetActorRotation(FRotator(0.0f, NewRot.Yaw, 0.0f));
 		}
 	}
 }
