@@ -13,7 +13,6 @@ UMeleeFightComponent::UMeleeFightComponent()
 	// ...
 }
 
-
 // Called when the game starts
 void UMeleeFightComponent::BeginPlay()
 {
@@ -22,7 +21,6 @@ void UMeleeFightComponent::BeginPlay()
 	// ...
 
 }
-
 
 // Called every frame
 void UMeleeFightComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -42,9 +40,6 @@ void UMeleeFightComponent::DetectEnemies()
 	for (FVector AttachPoint : WeaponAttachPoint)
 	{
 		FVector TraceEnd = 10000 * basicUnitController->GetActorForwardVector();
-		DrawDebugLine(GetWorld(), AttachPoint, TraceEnd, FColor::Green, true, 1, 0, 1);
+		//DrawDebugLine(GetWorld(), AttachPoint, TraceEnd, FColor::Green, true, 1, 0, 1);
 	}
 }
-
-
-

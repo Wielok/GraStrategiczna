@@ -64,8 +64,6 @@ void ABasicUnitV2::Tick(float DeltaTime)
 		}
 		else
 		{
-
-			FVector moveVector = (NextPoint - GetActorLocation());
 			FRotator currentRotation = GetActorRotation();
 			FRotator findLookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), NextPoint);
 			FRotator NewRot;
@@ -74,13 +72,15 @@ void ABasicUnitV2::Tick(float DeltaTime)
 				NewRot = FMath::RInterpTo(GetActorRotation(), findLookAtRotation, DeltaTime, WalkRotationSpeed);
 				if ((int)NewRot.Yaw == (int)currentRotation.Yaw)
 				{
-					SetActorLocation(GetActorLocation() + moveVector.GetClampedToMaxSize(WalkSpeed) * DeltaTime);
+					FVector moveVector = FMath::VInterpConstantTo(GetActorLocation(), NextPoint, DeltaTime, WalkSpeed);
+					SetActorLocation(moveVector);
 				}
 				SetActorRotation(FRotator(0.0f, NewRot.Yaw, 0.0f));
 				break;
 			case 2:
-				NewRot = FMath::RInterpTo(GetActorRotation(), findLookAtRotation, DeltaTime, RunningRotationSpeed);
-				SetActorLocation(GetActorLocation() + moveVector.GetClampedToMaxSize(RunningSpeed) * DeltaTime);
+				NewRot = FMath::RInterpConstantTo(currentRotation, findLookAtRotation, DeltaTime, RunningRotationSpeed);
+				FVector moveVector = FMath::VInterpConstantTo(GetActorLocation(), NextPoint, DeltaTime, RunningSpeed);
+				SetActorLocation(moveVector);
 				SetActorRotation(FRotator(0.0f, NewRot.Yaw, 0.0f));
 				break;
 

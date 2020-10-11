@@ -148,7 +148,6 @@ void AStrategyGameCharacter::OnClickLeft()
 			CurrentUnit = nullptr;
 			FActorSpawnParameters ActorSpawnParams;
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-			GetWorld()->SpawnActor<ATestowyActor>(ProjectileClass, Interaction.Location, FRotator(0.0f, 0.0f, 0.0f), ActorSpawnParams);
 			for (int i = 0; i < Units.Num(); i++)
 			{
 				if (Units[i] == Interaction.GetActor())
@@ -182,7 +181,6 @@ void AStrategyGameCharacter::OnClickRight()
 			{
 				FActorSpawnParameters ActorSpawnParams;
 				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-				GetWorld()->SpawnActor<ATestowyActor>(ProjectileClass, Interaction.Location, FRotator(0.0f, 0.0f, 0.0f), ActorSpawnParams);
 				CurrentUnit->MoveToPoint(Interaction.Location);
 			}
 

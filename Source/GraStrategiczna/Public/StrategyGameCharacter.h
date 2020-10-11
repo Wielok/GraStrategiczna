@@ -5,7 +5,6 @@
 #include "StrategyGameCharacter.generated.h"
 
 class ABasicUnitV2;
-class ATestowyActor;
 class UCameraComponent;
 class USpringArmComponent;
 
@@ -56,9 +55,6 @@ protected:
 public:	
 
 	UCharacterMovementComponent* MoveComp;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
-	TSubclassOf<ATestowyActor> ProjectileClass;
 
 	float BaseDistanceChangeRate;
 	float BaseTurnRate;
