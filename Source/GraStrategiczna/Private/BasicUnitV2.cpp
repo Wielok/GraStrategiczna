@@ -69,7 +69,7 @@ void ABasicUnitV2::Tick(float DeltaTime)
 			FRotator NewRot;
 			switch (moveType) {
 			case 1:
-				NewRot = FMath::RInterpTo(GetActorRotation(), findLookAtRotation, DeltaTime, WalkRotationSpeed);
+				NewRot = FMath::RInterpConstantTo(currentRotation, findLookAtRotation, DeltaTime, WalkRotationSpeed);
 				if ((int)NewRot.Yaw == (int)currentRotation.Yaw)
 				{
 					FVector moveVector = FMath::VInterpConstantTo(GetActorLocation(), NextPoint, DeltaTime, WalkSpeed);
