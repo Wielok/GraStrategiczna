@@ -60,8 +60,8 @@ void AStrategyGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	PlayerInputComponent->BindAxis("ArmLength", this, &AStrategyGameCharacter::ChangeDistance);
 
 
-	PlayerInputComponent->BindAction("onClick", IE_Pressed, this, &AStrategyGameCharacter::onClick);
-	PlayerInputComponent->BindAction("onClickRight", IE_Pressed, this, &AStrategyGameCharacter::onClickRight);
+	PlayerInputComponent->BindAction("OnClickLeft", IE_Pressed, this, &AStrategyGameCharacter::OnClickLeft);
+	PlayerInputComponent->BindAction("OnClickRight", IE_Pressed, this, &AStrategyGameCharacter::OnClickRight);
 
 	PlayerInputComponent->BindAction("MoveCamera", IE_Pressed, this, &AStrategyGameCharacter::MoveCamera);
 	PlayerInputComponent->BindAction("MoveCamera", IE_Released, this, &AStrategyGameCharacter::StopMoveCamera);
@@ -88,7 +88,6 @@ void AStrategyGameCharacter::MoveForward(float Value)
 		else
 		{
 			AddMovementInput(GetActorForwardVector(), Value);
-
 		}
 	}
 }
@@ -126,17 +125,13 @@ void AStrategyGameCharacter::ChangeDistance(float Rate)
 	AddMovementInput(vForward, Rate);
 }
 
-void AStrategyGameCharacter::onClick()
+void AStrategyGameCharacter::OnClickLeft()
 {
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController != nullptr)
 	{
 		FVector mouseLocation, mouseDirection;
-
-
 		PlayerController->DeprojectMousePositionToWorld(mouseLocation, mouseDirection);
-
-
 		FVector TraceEnd = (mouseLocation + (mouseDirection * 100000));
 
 		FCollisionQueryParams QueryParmas;
@@ -151,7 +146,6 @@ void AStrategyGameCharacter::onClick()
 		if (Interaction.GetActor() != nullptr)
 		{
 			CurrentUnit = nullptr;
-			TraceString += FString::Printf(TEXT("%s."), *Interaction.Location.ToString());
 			FActorSpawnParameters ActorSpawnParams;
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 			GetWorld()->SpawnActor<ATestowyActor>(ProjectileClass, Interaction.Location, FRotator(0.0f, 0.0f, 0.0f), ActorSpawnParams);
@@ -160,8 +154,6 @@ void AStrategyGameCharacter::onClick()
 				if (Units[i] == Interaction.GetActor())
 				{
 					CurrentUnit = Cast<ABasicUnitV2>(Interaction.GetActor());
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "jednostka");
-
 				}
 
 			}
@@ -170,7 +162,7 @@ void AStrategyGameCharacter::onClick()
 	}
 }
 
-void AStrategyGameCharacter::onClickRight()
+void AStrategyGameCharacter::OnClickRight()
 {
 	if (CurrentUnit != nullptr) {
 
@@ -192,7 +184,6 @@ void AStrategyGameCharacter::onClickRight()
 				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 				GetWorld()->SpawnActor<ATestowyActor>(ProjectileClass, Interaction.Location, FRotator(0.0f, 0.0f, 0.0f), ActorSpawnParams);
 				CurrentUnit->MoveToPoint(Interaction.Location);
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Kurczak");
 			}
 
 		}

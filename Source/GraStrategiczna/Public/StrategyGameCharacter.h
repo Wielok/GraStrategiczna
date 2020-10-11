@@ -40,9 +40,9 @@ protected:
 
 	void ChangeDistance(float Rate);
 
-	void onClick();
+	void OnClickLeft();
 
-	void onClickRight();
+	void OnClickRight();
 
 
 	// Called when the game starts or when spawned
@@ -56,6 +56,7 @@ protected:
 public:	
 
 	UCharacterMovementComponent* MoveComp;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
 	TSubclassOf<ATestowyActor> ProjectileClass;
 

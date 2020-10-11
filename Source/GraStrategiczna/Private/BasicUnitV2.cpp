@@ -7,13 +7,15 @@
 #include "MoveCompBasic.h"
 #include "NavigationPath.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "MeleeFightComponent.h"
+
+
 
 ABasicUnitV2::ABasicUnitV2()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	RequiredDistanceToTarget = 1.0f;
-	bEnd = true;
+	meleeFightComponent=CreateDefaultSubobject<UMeleeFightComponent>(TEXT("MeleeFightComponent"));
 }
 
 void ABasicUnitV2::BeginPlay()
@@ -39,9 +41,9 @@ FVector ABasicUnitV2::NextPathPoint()
 	if (NavPath && enumeration < NavPath->PathPoints.Num())
 	{
 		enumeration++;
-		return NavPath->PathPoints[enumeration-1];
+		return NavPath->PathPoints[enumeration - 1];
 	}
-	else 
+	else
 	{
 		bEnd = true;
 	}
@@ -51,8 +53,9 @@ FVector ABasicUnitV2::NextPathPoint()
 void ABasicUnitV2::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	meleeFightComponent->DetectEnemies();
 
-	if (bEnd == false) 
+	if (bEnd == false)
 	{
 		float DistanceToTarget = FVector::Dist(GetActorLocation(), NextPoint);
 
@@ -61,13 +64,28 @@ void ABasicUnitV2::Tick(float DeltaTime)
 		}
 		else
 		{
+
 			FVector moveVector = (NextPoint - GetActorLocation());
 			FRotator currentRotation = GetActorRotation();
 			FRotator findLookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), NextPoint);
-			FRotator NewRot = FMath::RInterpTo(GetActorRotation(), findLookAtRotation, DeltaTime, 2);
-			AddActorWorldTransform(FTransform(NewRot,moveVector.GetClampedToMaxSize(3),FVector::OneVector));
-			SetActorLocation(GetActorLocation() + moveVector.GetClampedToMaxSize(3));
-			SetActorRotation(FRotator(0.0f, NewRot.Yaw, 0.0f));
+			FRotator NewRot;
+			switch (moveType) {
+			case 1:
+				NewRot = FMath::RInterpTo(GetActorRotation(), findLookAtRotation, DeltaTime, WalkRotationSpeed);
+				if ((int)NewRot.Yaw == (int)currentRotation.Yaw)
+				{
+					SetActorLocation(GetActorLocation() + moveVector.GetClampedToMaxSize(WalkSpeed) * DeltaTime);
+				}
+				SetActorRotation(FRotator(0.0f, NewRot.Yaw, 0.0f));
+				break;
+			case 2:
+				NewRot = FMath::RInterpTo(GetActorRotation(), findLookAtRotation, DeltaTime, RunningRotationSpeed);
+				SetActorLocation(GetActorLocation() + moveVector.GetClampedToMaxSize(RunningSpeed) * DeltaTime);
+				SetActorRotation(FRotator(0.0f, NewRot.Yaw, 0.0f));
+				break;
+
+			}
+
 		}
 	}
 }
