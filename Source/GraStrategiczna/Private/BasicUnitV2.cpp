@@ -9,8 +9,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "MeleeFightComponent.h"
 
-
-
 ABasicUnitV2::ABasicUnitV2()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -64,6 +62,7 @@ void ABasicUnitV2::Tick(float DeltaTime)
 		}
 		else
 		{
+			FVector currentlocation = GetActorLocation();
 			FRotator currentRotation = GetActorRotation();
 			FRotator findLookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), NextPoint);
 			FRotator NewRot;
@@ -73,14 +72,16 @@ void ABasicUnitV2::Tick(float DeltaTime)
 				if ((int)NewRot.Yaw == (int)currentRotation.Yaw)
 				{
 					FVector moveVector = FMath::VInterpConstantTo(GetActorLocation(), NextPoint, DeltaTime, WalkSpeed);
-					SetActorLocation(moveVector);
+					//SetActorLocation(moveVector);
+					AddMovementInput(moveVector-currentlocation);
 				}
 				SetActorRotation(FRotator(0.0f, NewRot.Yaw, 0.0f));
 				break;
 			case 2:
 				NewRot = FMath::RInterpConstantTo(currentRotation, findLookAtRotation, DeltaTime, RunningRotationSpeed);
 				FVector moveVector = FMath::VInterpConstantTo(GetActorLocation(), NextPoint, DeltaTime, RunningSpeed);
-				SetActorLocation(moveVector);
+				//SetActorLocation(moveVector);
+				AddMovementInput(moveVector-currentlocation);
 				SetActorRotation(FRotator(0.0f, NewRot.Yaw, 0.0f));
 				break;
 
