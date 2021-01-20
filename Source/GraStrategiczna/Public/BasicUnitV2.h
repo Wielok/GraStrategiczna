@@ -4,6 +4,7 @@
 #include "NavigationPath.h"
 #include "GameFramework/Character.h"
 #include "MovingType.h"
+#include "UnitStatusType.h"
 #include "BasicUnitV2.generated.h"
 
 class UMeleeFightComponent;
@@ -19,6 +20,7 @@ public:
 	ABasicUnitV2();
 
 	void MoveToPoint(FVector Location);
+	void AttackEnemy(ABasicUnitV2* enemyUnit);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Test)
@@ -28,6 +30,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Test)
 		UMeleeFightComponent* meleeFightComponent;
 
+	FVector NextPathPointToEnemy();
 	FVector NextPathPoint();
 	virtual void BeginPlay() override;
 
@@ -46,6 +49,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MoveState")
 		MovingType moveType = MovingType::Idle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UnitStatus")
+		UnitStatusType unitStatusType = UnitStatusType::Owner;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MoveState|Walk")
 		int WalkSpeed = 3;

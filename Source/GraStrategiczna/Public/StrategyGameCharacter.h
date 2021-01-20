@@ -46,9 +46,12 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	TArray<AActor*> Units;
+	TArray<ABasicUnitV2*> Units;
+	TArray<ABasicUnitV2*> frendlyUnits;
+	TArray<ABasicUnitV2*> enemyUnits;
 
-	ABasicUnitV2* CurrentUnit;
+	ABasicUnitV2* CurrentUnit = nullptr;
+	ABasicUnitV2* enemyUnit = nullptr;
 	
 public:	
 
@@ -60,4 +63,7 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+private:
+	void SeperateEnemiesWithFrendlyUnits();
 };

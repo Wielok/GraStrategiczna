@@ -53,3 +53,8 @@ void UMeleeFightComponent::SetFocuesedEnemy(ABasicUnitV2* enemy)
 {
 	focusedEnemy = enemy;
 }
+
+bool UMeleeFightComponent::IsEnemySet()
+{
+	return (focusedEnemy == nullptr);
+}

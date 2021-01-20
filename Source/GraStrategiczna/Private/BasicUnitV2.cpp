@@ -33,13 +33,17 @@ void ABasicUnitV2::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void ABasicUnitV2::MoveToPoint(FVector Location)
 {
+	meleeFightComponent->SetFocuesedEnemy(nullptr);
 	enumeration = 0;
 	NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, GetActorLocation(), Location);
 	NextPoint = NextPathPoint();
 	bEnd = false;
 }
 
-
+void ABasicUnitV2::AttackEnemy(ABasicUnitV2* enemyUnit)
+{
+	meleeFightComponent->SetFocuesedEnemy(enemyUnit);
+}
 
 FVector ABasicUnitV2::NextPathPoint()
 {
@@ -51,6 +55,11 @@ FVector ABasicUnitV2::NextPathPoint()
 	{
 		bEnd = true;
 	}
+	return GetActorLocation();
+}
+
+FVector ABasicUnitV2::NextPathPointToEnemy()
+{
 	return GetActorLocation();
 }
 
@@ -66,7 +75,13 @@ void ABasicUnitV2::Tick(float DeltaTime)
 			float DistanceToTarget = FVector::Dist(GetActorLocation(), NextPoint);
 
 			if (DistanceToTarget <= 100.0f) {
-				NextPoint = NextPathPoint();
+				if (meleeFightComponent->IsEnemySet()) {
+					NextPoint = NextPathPoint();
+				} 
+				else
+				{
+					NextPoint = NextPathPointToEnemy();
+				}
 			}
 			else
 			{

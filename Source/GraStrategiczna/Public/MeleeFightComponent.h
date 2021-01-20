@@ -37,5 +37,7 @@ public:
 	void DetectEnemies();
 
 	void SetFocuesedEnemy(ABasicUnitV2* enemy);
+
+	bool IsEnemySet();
 		
 };

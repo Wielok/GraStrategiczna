@@ -30,8 +30,7 @@ void AStrategyGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABasicUnitV2::StaticClass(), Units);
-
+	SeperateEnemiesWithFrendlyUnits();
 	MoveComp = GetCharacterMovement();
 	MoveComp->SetMovementMode(MOVE_Flying);
 	MoveComp->bCheatFlying = true;
@@ -65,6 +64,30 @@ void AStrategyGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 	PlayerInputComponent->BindAction("MoveCamera", IE_Pressed, this, &AStrategyGameCharacter::MoveCamera);
 	PlayerInputComponent->BindAction("MoveCamera", IE_Released, this, &AStrategyGameCharacter::StopMoveCamera);
+}
+
+void AStrategyGameCharacter::SeperateEnemiesWithFrendlyUnits()
+{
+
+	TArray<AActor*> UnitsTemp;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABasicUnitV2::StaticClass(), UnitsTemp);
+
+	for (AActor* Actor : UnitsTemp)
+	{
+		Units.Add(Cast<ABasicUnitV2>(Actor));
+	}
+
+	for (ABasicUnitV2* Actor : Units)
+	{
+		if (Actor->unitStatusType == UnitStatusType::Owner) 
+		{
+			frendlyUnits.Add(Actor);
+		}
+		else if (Actor->unitStatusType == UnitStatusType::Enemy) 
+		{
+			enemyUnits.Add(Actor);
+		}
+	}
 }
 
 void AStrategyGameCharacter::MoveRight(float Value)
@@ -148,13 +171,9 @@ void AStrategyGameCharacter::OnClickLeft()
 			CurrentUnit = nullptr;
 			FActorSpawnParameters ActorSpawnParams;
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-			for (int i = 0; i < Units.Num(); i++)
+			if (frendlyUnits.Contains(Cast<ABasicUnitV2>(Interaction.GetActor())))
 			{
-				if (Units[i] == Interaction.GetActor())
-				{
-					CurrentUnit = Cast<ABasicUnitV2>(Interaction.GetActor());
-				}
-
+				CurrentUnit = Cast<ABasicUnitV2>(Interaction.GetActor());
 			}
 		}
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TraceString);
@@ -182,6 +201,10 @@ void AStrategyGameCharacter::OnClickRight()
 				FActorSpawnParameters ActorSpawnParams;
 				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 				CurrentUnit->MoveToPoint(Interaction.Location);
+			}			else if(enemyUnits.Contains(Interaction.GetActor()))
+			{
+				enemyUnit = Cast<ABasicUnitV2>(Interaction.GetActor());
+				CurrentUnit->AttackEnemy(enemyUnit);
 			}
 
 		}
