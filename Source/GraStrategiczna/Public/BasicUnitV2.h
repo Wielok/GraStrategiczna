@@ -7,6 +7,8 @@
 #include "BasicUnitV2.generated.h"
 
 class UMeleeFightComponent;
+class UHealthComponent;
+class UStaminaComponent;
 
 UCLASS()
 class GRASTRATEGICZNA_API ABasicUnitV2 : public ACharacter
@@ -19,16 +21,18 @@ public:
 	void MoveToPoint(FVector Location);
 
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Test)
+		UHealthComponent* healthComponent;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Test)
+		UStaminaComponent* staminaComponent;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Test)
+		UMeleeFightComponent* meleeFightComponent;
 
 	FVector NextPathPoint();
 	virtual void BeginPlay() override;
 
 	FVector NextPoint;
 	UNavigationPath* NavPath;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Test)
-	UMeleeFightComponent* meleeFightComponent;
-
 
 	int enumeration;
 	float MovementForce;
@@ -41,15 +45,15 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MoveState")
-	TEnumAsByte<MovingType> moveType;
+		MovingType moveType = MovingType::Idle;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MoveState|Walk")
-	int WalkSpeed = 3;
+		int WalkSpeed = 3;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MoveState|Walk")
-	int WalkRotationSpeed = 2;
+		int WalkRotationSpeed = 2;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MoveState|Running")
-	int RunningSpeed = 5;
+		int RunningSpeed = 5;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MoveState|Running")
-	int RunningRotationSpeed = 3;
+		int RunningRotationSpeed = 3;
 };

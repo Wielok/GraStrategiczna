@@ -9,6 +9,7 @@ UMeleeFightComponent::UMeleeFightComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	basicUnitController = Cast<ABasicUnitV2>(GetOwner());
+	sphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 
 	// ...
 }
@@ -27,6 +28,10 @@ void UMeleeFightComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (focusedEnemy != nullptr) {
+
+	}
+
 	// ...
 }
 
@@ -42,4 +47,9 @@ void UMeleeFightComponent::DetectEnemies()
 		FVector TraceEnd = 10000 * basicUnitController->GetActorForwardVector();
 		//DrawDebugLine(GetWorld(), AttachPoint, TraceEnd, FColor::Green, true, 1, 0, 1);
 	}
+}
+
+void UMeleeFightComponent::SetFocuesedEnemy(ABasicUnitV2* enemy)
+{
+	focusedEnemy = enemy;
 }

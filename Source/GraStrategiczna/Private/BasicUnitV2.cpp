@@ -8,12 +8,17 @@
 #include "NavigationPath.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "MeleeFightComponent.h"
+#include "HealthComponent.h"
+#include "StaminaComponent.h"
+#include "MovingType.h"
 
 ABasicUnitV2::ABasicUnitV2()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	meleeFightComponent=CreateDefaultSubobject<UMeleeFightComponent>(TEXT("MeleeFightComponent"));
+	meleeFightComponent = CreateDefaultSubobject<UMeleeFightComponent>(TEXT("MeleeFightComponent"));
+	healthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	staminaComponent = CreateDefaultSubobject<UStaminaComponent>(TEXT("StaminaComponent"));
 }
 
 void ABasicUnitV2::BeginPlay()
@@ -34,12 +39,13 @@ void ABasicUnitV2::MoveToPoint(FVector Location)
 	bEnd = false;
 }
 
+
+
 FVector ABasicUnitV2::NextPathPoint()
 {
 	if (NavPath && enumeration < NavPath->PathPoints.Num())
 	{
-		enumeration++;
-		return NavPath->PathPoints[enumeration - 1];
+		return NavPath->PathPoints[enumeration++];
 	}
 	else
 	{
@@ -53,40 +59,48 @@ void ABasicUnitV2::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	meleeFightComponent->DetectEnemies();
 
-	if (bEnd == false)
-	{
-		float DistanceToTarget = FVector::Dist(GetActorLocation(), NextPoint);
 
-		if (DistanceToTarget <= 100.0f) {
-			NextPoint = NextPathPoint();
-		}
-		else
+	if (healthComponent->IsAlive()) {
+		if (bEnd == false)
 		{
-			FVector currentlocation = GetActorLocation();
-			FRotator currentRotation = GetActorRotation();
-			FRotator findLookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), NextPoint);
-			FRotator NewRot;
-			switch (moveType) {
-			case 1:
-				NewRot = FMath::RInterpConstantTo(currentRotation, findLookAtRotation, DeltaTime, WalkRotationSpeed);
-				if ((int)NewRot.Yaw == (int)currentRotation.Yaw)
-				{
-					FVector moveVector = FMath::VInterpConstantTo(GetActorLocation(), NextPoint, DeltaTime, WalkSpeed);
-					//SetActorLocation(moveVector);
-					AddMovementInput(moveVector-currentlocation);
-				}
-				SetActorRotation(FRotator(0.0f, NewRot.Yaw, 0.0f));
-				break;
-			case 2:
-				NewRot = FMath::RInterpConstantTo(currentRotation, findLookAtRotation, DeltaTime, RunningRotationSpeed);
-				FVector moveVector = FMath::VInterpConstantTo(GetActorLocation(), NextPoint, DeltaTime, RunningSpeed);
-				//SetActorLocation(moveVector);
-				AddMovementInput(moveVector-currentlocation);
-				SetActorRotation(FRotator(0.0f, NewRot.Yaw, 0.0f));
-				break;
+			float DistanceToTarget = FVector::Dist(GetActorLocation(), NextPoint);
 
+			if (DistanceToTarget <= 100.0f) {
+				NextPoint = NextPathPoint();
 			}
+			else
+			{
+				FVector currentlocation = GetActorLocation();
+				FRotator currentRotation = GetActorRotation();
+				FRotator findLookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), NextPoint);
+				FRotator NewRot;
+				if (!(staminaComponent->CanRun())) {
+					moveType = MovingType::Walk;
+					staminaComponent->StartResting();
+				}
+				else {
+					moveType = MovingType::Running;
+				}
 
+				switch (moveType) {
+				case MovingType::Walk:
+					NewRot = FMath::RInterpConstantTo(currentRotation, findLookAtRotation, DeltaTime, WalkRotationSpeed);
+					if ((int)NewRot.Yaw == (int)currentRotation.Yaw)
+					{
+						FVector moveVector = FMath::VInterpConstantTo(GetActorLocation(), NextPoint, DeltaTime, WalkSpeed);
+						AddMovementInput(moveVector - currentlocation);
+					}
+					SetActorRotation(FRotator(0.0f, NewRot.Yaw, 0.0f));
+					break;
+				case MovingType::Running:
+					NewRot = FMath::RInterpConstantTo(currentRotation, findLookAtRotation, DeltaTime, RunningRotationSpeed);
+					FVector moveVector = FMath::VInterpConstantTo(GetActorLocation(), NextPoint, DeltaTime, RunningSpeed);
+					AddMovementInput(moveVector - currentlocation);
+					SetActorRotation(FRotator(0.0f, NewRot.Yaw, 0.0f));
+					staminaComponent->Fatique(DeltaTime);
+					break;
+				}
+			}
 		}
 	}
 }

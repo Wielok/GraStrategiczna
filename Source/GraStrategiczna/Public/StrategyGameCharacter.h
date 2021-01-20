@@ -22,7 +22,7 @@ protected:
 	bool bMove=false;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-		UCameraComponent* CameraComp;
+	UCameraComponent* CameraComp;
 
 
 	void MoveForward(float Value);
@@ -44,13 +44,11 @@ protected:
 	void OnClickRight();
 
 
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	TArray<AActor*> Units;
 
 	ABasicUnitV2* CurrentUnit;
-
 	
 public:	
 
