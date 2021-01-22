@@ -44,9 +44,6 @@ protected:
 	bool bEnd = true;
 
 public:
-	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MoveState")
 		MovingType moveType = MovingType::Idle;
 
@@ -62,4 +59,7 @@ public:
 		int RunningSpeed = 5;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MoveState|Running")
 		int RunningRotationSpeed = 3;
+
+	virtual void Tick(float DeltaTime) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };

@@ -68,7 +68,6 @@ void AStrategyGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 void AStrategyGameCharacter::SeperateEnemiesWithFrendlyUnits()
 {
-
 	TArray<AActor*> UnitsTemp;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABasicUnitV2::StaticClass(), UnitsTemp);
 
