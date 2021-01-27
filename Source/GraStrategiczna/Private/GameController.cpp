@@ -2,6 +2,8 @@
 
 
 #include "GameController.h"
+#include "StrategyGameCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AGameController::AGameController()
@@ -19,7 +21,13 @@ void AGameController::BeginPlay()
 	for (AUnitSpawnerActor* spawner : unitSpawners) {
 		spawner->SpawnUnit(this->GetActorLocation(), this->GetActorRotation());
 	}
-	
+	TArray<AActor*> FoundPlayers;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AStrategyGameCharacter::StaticClass(), FoundPlayers);
+	for (AActor* character : FoundPlayers) {
+		AStrategyGameCharacter* player = Cast<AStrategyGameCharacter>(character);
+		player->SeperateEnemiesWithFrendlyUnits();
+
+	}
 }
 
 // Called every frame

@@ -30,7 +30,6 @@ void AStrategyGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SeperateEnemiesWithFrendlyUnits();
 	MoveComp = GetCharacterMovement();
 	MoveComp->SetMovementMode(MOVE_Flying);
 	MoveComp->bCheatFlying = true;
@@ -197,15 +196,16 @@ void AStrategyGameCharacter::OnClickRight()
 			FString TraceString;
 			if (Interaction.GetActor() != nullptr)
 			{
-				FActorSpawnParameters ActorSpawnParams;
-				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-				CurrentUnit->MoveToPoint(Interaction.Location);
-			}			else if(enemyUnits.Contains(Interaction.GetActor()))
-			{
-				enemyUnit = Cast<ABasicUnitV2>(Interaction.GetActor());
-				CurrentUnit->AttackEnemy(enemyUnit);
-			}
+				if (!enemyUnits.Contains(Interaction.GetActor())) {
+					CurrentUnit->MoveToPoint(Interaction.Location);
+				}
+				else {
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Attack")));
+					enemyUnit = Cast<ABasicUnitV2>(Interaction.GetActor());
+					CurrentUnit->AttackEnemy(enemyUnit);
+				}
 
+			}
 		}
 	}
 }

@@ -44,7 +44,7 @@ void UMeleeFightComponent::DetectEnemies()
 
 	for (FVector AttachPoint : WeaponAttachPoint)
 	{
-		FVector TraceEnd = 10000 * basicUnitController->GetActorForwardVector();
+		//FVector TraceEnd = 10000 * basicUnitController->GetActorForwardVector();
 		//DrawDebugLine(GetWorld(), AttachPoint, TraceEnd, FColor::Green, true, 1, 0, 1);
 	}
 }

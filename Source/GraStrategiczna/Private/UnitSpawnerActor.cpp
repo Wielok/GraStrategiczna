@@ -27,6 +27,9 @@ void AUnitSpawnerActor::Tick(float DeltaTime)
 
 void AUnitSpawnerActor::SpawnUnit(FVector location, FRotator rotation)
 {
-	GetWorld()->SpawnActor<ABasicUnitV2>(unitRef, location, rotation);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Spawning")));
+
+	ABasicUnitV2* spawnedUnit = (GetWorld()->SpawnActor<ABasicUnitV2>(unitRef, GetActorLocation(), GetActorRotation()));
+	spawnedUnit->unitStatusType = unitStatusType;
 }
 

@@ -5,9 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "UnitSpawnerActor.h"
+#include "StrategyGameCharacter.h"
 #include "GameController.generated.h"
 
 class AUnitSpawnerActor;
+class AStrategyGameCharacter;
 
 UCLASS()
 class GRASTRATEGICZNA_API AGameController : public AActor
@@ -28,5 +30,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	TArray<AStrategyGameCharacter*> Players;
 
 };

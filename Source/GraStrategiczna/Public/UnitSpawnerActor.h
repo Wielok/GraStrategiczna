@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UnitType.h"
 #include "BasicUnitV2.h"
+#include "UnitStatusType.h"
 #include "GameFramework/Actor.h"
 #include "UnitSpawnerActor.generated.h"
 
@@ -28,6 +29,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UnitType|Ref")
 		TSubclassOf<ABasicUnitV2> unitRef;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UnitType|Status")
+		UnitStatusType unitStatusType = UnitStatusType::Owner;
+
 
 
 public:	
