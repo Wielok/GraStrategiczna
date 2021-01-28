@@ -200,7 +200,6 @@ void AStrategyGameCharacter::OnClickRight()
 					CurrentUnit->MoveToPoint(Interaction.Location);
 				}
 				else {
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Attack")));
 					enemyUnit = Cast<ABasicUnitV2>(Interaction.GetActor());
 					CurrentUnit->AttackEnemy(enemyUnit);
 				}

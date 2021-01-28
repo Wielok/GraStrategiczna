@@ -17,7 +17,7 @@ ATestowyActor::ATestowyActor()
 	{
 		MeshComp->SetStaticMesh(BoxVisualAsset.Object);
 		MeshComp->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-		MeshComp->SetWorldScale3D(FVector(.2f));
+		MeshComp->SetWorldScale3D(FVector(1.0f));
 	}
 
 	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);

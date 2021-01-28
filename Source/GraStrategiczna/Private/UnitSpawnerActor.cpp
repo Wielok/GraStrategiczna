@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "UnitType.h"
 #include "UnitSpawnerActor.h"
 
 // Sets default values
@@ -30,6 +30,7 @@ void AUnitSpawnerActor::SpawnUnit(FVector location, FRotator rotation)
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Spawning")));
 
 	ABasicUnitV2* spawnedUnit = (GetWorld()->SpawnActor<ABasicUnitV2>(unitRef, GetActorLocation(), GetActorRotation()));
+	spawnedUnit->unitType = unitType;
 	spawnedUnit->unitStatusType = unitStatusType;
 }
 

@@ -17,8 +17,7 @@ public:
 	UMeleeFightComponent();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SphereComponent")
-		USphereComponent* sphereComponent;
+
 
 	ABasicUnitV2* basicUnitController;
 	TArray<FVector> WeaponAttachPoint;
@@ -31,6 +30,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "RayCast Sockets")
 	TArray<FName> WeaponAttachPointSocket;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DMG")
+		float DmgValue;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DMG")
+		float DmgTimer;
 
 	ABasicUnitV2* focusedEnemy;
 

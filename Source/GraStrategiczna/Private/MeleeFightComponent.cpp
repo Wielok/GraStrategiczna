@@ -7,9 +7,8 @@ UMeleeFightComponent::UMeleeFightComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+
 	basicUnitController = Cast<ABasicUnitV2>(GetOwner());
-	sphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 
 	// ...
 }
@@ -18,7 +17,6 @@ UMeleeFightComponent::UMeleeFightComponent()
 void UMeleeFightComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
 	// ...
 
 }
@@ -34,6 +32,7 @@ void UMeleeFightComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 	// ...
 }
+
 
 void UMeleeFightComponent::DetectEnemies()
 {
@@ -56,5 +55,5 @@ void UMeleeFightComponent::SetFocuesedEnemy(ABasicUnitV2* enemy)
 
 bool UMeleeFightComponent::IsEnemySet()
 {
-	return (focusedEnemy == nullptr);
+	return (focusedEnemy != nullptr);
 }
